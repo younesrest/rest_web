@@ -1,213 +1,368 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en" class="light-theme">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rest - Ciberseguridad & Programador</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-text">REST</span>
-            </div>
-            <div class="nav-menu">
-                <a href="#home" class="nav-link" data-section="home">Inicio</a>
-                <a href="#about" class="nav-link" data-section="about">Sobre Mí</a>
-                <a href="#projects" class="nav-link" data-section="projects">Proyectos</a>
-                <a href="#services" class="nav-link" data-section="services">Servicios</a>
-                <button class="nav-contact-btn" id="contactBtn">Contacto</button>
-            </div>
+  <canvas id="background-canvas"></canvas>
+  
+  <header>
+    <div class="container">
+      <div class="logo">
+        <span class="highlight">Dev</span>Rest
+      </div>
+      <nav class="desktop-nav">
+        <button class="nav-link active" data-section="about">Sobre mi</button>
+        <button class="nav-link" data-section="skills">Habilidades</button>
+        <button class="nav-link" data-section="projects">Proyectos</button>
+        <button class="nav-link" data-section="contact">Contacto</button>
+      </nav>
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <!-- Sun icon (for dark mode) -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <!-- Moon icon (for light mode) -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <div class="social-icons">
+          <a href="https://github.com/younesrest" target="_blank" aria-label="GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+          </a>
+
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <canvas id="galaxyCanvas"></canvas>
-        <div class="hero-content">
-            <div class="hero-logo">REST</div>
-            <h1 class="hero-title animate-title">Ciberseguridad & Programación</h1>
-            <p class="hero-subtitle">Estudiante apasionado por la seguridad informática</p>
-        </div>
-        <div class="scroll-indicator"></div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <canvas id="aboutCanvas"></canvas>
-        <div class="about-content">
-            <h2 class="section-title">Sobre Mí</h2>
-            <div class="about-grid">
-                <div class="about-card">
-                    <h3>Ciberseguridad</h3>
-                    <p>Estudiante dedicado a la seguridad informática. Especializado en análisis de vulnerabilidades, pentesting y protección de sistemas.</p>
-                </div>
-                <div class="about-card">
-                    <h3>Programación</h3>
-                    <p>Desarrollo de aplicaciones con Python, JavaScript, C++. Apasionado por crear soluciones seguras y eficientes.</p>
-                </div>
-                <div class="about-card">
-                    <h3>Experiencia</h3>
-                    <p>Proyectos de seguridad, scripts de automatización, aplicaciones web seguras y herramientas de pentesting.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <canvas id="projectsCanvas"></canvas>
-        <div class="projects-content">
-            <h2 class="section-title">Proyectos</h2>
-            <div class="projects-grid">
-                <div class="project-card" data-project="1">
-                    <div class="project-header">
-                        <h3>Herramienta de Análisis de Vulnerabilidades</h3>
-                        <span class="project-badge">Python</span>
-                    </div>
-                    <p>Script automatizado para escaneo de puertos y análisis de vulnerabilidades en redes locales.</p>
-                    <div class="project-tags">
-                        <span class="tag">Pentesting</span>
-                        <span class="tag">Python</span>
-                        <span class="tag">Seguridad</span>
-                    </div>
-                </div>
-
-                <div class="project-card" data-project="2">
-                    <div class="project-header">
-                        <h3>Aplicación Web Segura</h3>
-                        <span class="project-badge">JavaScript</span>
-                    </div>
-                    <p>Plataforma de gestión de datos con autenticación, encriptación y protección contra ataques OWASP.</p>
-                    <div class="project-tags">
-                        <span class="tag">Web Security</span>
-                        <span class="tag">JavaScript</span>
-                        <span class="tag">Full-Stack</span>
-                    </div>
-                </div>
-
-                <div class="project-card" data-project="3">
-                    <div class="project-header">
-                        <h3>Malware Detector</h3>
-                        <span class="project-badge">C++</span>
-                    </div>
-                    <p>Programa en C++ para detección y análisis de amenazas maliciosas en sistemas Windows/Linux.</p>
-                    <div class="project-tags">
-                        <span class="tag">Malware Analysis</span>
-                        <span class="tag">C++</span>
-                        <span class="tag">Sistemas</span>
-                    </div>
-                </div>
-
-                <div class="project-card" data-project="4">
-                    <div class="project-header">
-                        <h3>Gestor de Contraseñas Encriptado</h3>
-                        <span class="project-badge">Full-Stack</span>
-                    </div>
-                    <p>Aplicación segura para almacenar y gestionar contraseñas con encriptación AES-256.</p>
-                    <div class="project-tags">
-                        <span class="tag">Criptografía</span>
-                        <span class="tag">Full-Stack</span>
-                        <span class="tag">Seguridad</span>
-                    </div>
-                </div>
-
-                <div class="project-card" data-project="5">
-                    <div class="project-header">
-                        <h3>Monitor de Red en Tiempo Real</h3>
-                        <span class="project-badge">Python</span>
-                    </div>
-                    <p>Herramienta de monitoreo de tráfico de red con alertas de actividad sospechosa.</p>
-                    <div class="project-tags">
-                        <span class="tag">Networking</span>
-                        <span class="tag">Python</span>
-                        <span class="tag">Monitoreo</span>
-                    </div>
-                </div>
-
-                <div class="project-card" data-project="6">
-                    <div class="project-header">
-                        <h3>Auditor de Configuración SSL/TLS</h3>
-                        <span class="project-badge">Python</span>
-                    </div>
-                    <p>Script para auditoría de certificados SSL/TLS y evaluación de configuraciones seguras.</p>
-                    <div class="project-tags">
-                        <span class="tag">Criptografía</span>
-                        <span class="tag">Python</span>
-                        <span class="tag">Auditoría</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <canvas id="servicesCanvas"></canvas>
-        <div class="services-content">
-            <h2 class="section-title">Servicios</h2>
-            <div class="services-container">
-                <div class="service-card">
-                    <h3>Auditoría de Seguridad</h3>
-                    <p>Análisis completo de sistemas y aplicaciones para identificar vulnerabilidades.</p>
-                    <span class="service-price">Consultar</span>
-                </div>
-                <div class="service-card">
-                    <h3>Desarrollo Seguro</h3>
-                    <p>Desarrollo de aplicaciones con mejores prácticas de seguridad incorporadas.</p>
-                    <span class="service-price">Consultar</span>
-                </div>
-                <div class="service-card">
-                    <h3>Pentesting</h3>
-                    <p>Pruebas de penetración y evaluación de seguridad ofensiva.</p>
-                    <span class="service-price">Consultar</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Modal -->
-    <div id="contactModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Contactame</h2>
-            <form id="contactForm" class="contact-form">
-                <div class="form-group">
-                    <label for="name">Nombre</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="subject">Asunto</label>
-                    <input type="text" id="subject" name="subject" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Mensaje</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
-                </div>
-                <button type="submit" class="submit-btn">Enviar Mensaje</button>
-            </form>
-            <div id="formMessage" class="form-message"></div>
-        </div>
+      </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2025 Rest - Ciberseguridad & Programación. Todos los derechos reservados.</p>
-            <div class="social-links">
-                <a href="https://github.com" target="_blank">GitHub</a>
-                <a href="https://linkedin.com" target="_blank">LinkedIn</a>
-                <a href="https://twitter.com" target="_blank">Twitter</a>
-            </div>
+  </header>
+  
+  <main class="container">
+    <!-- About Section -->
+    <section id="about" class="section">
+      <div class="about-grid">
+        <div class="profile-image-container">
+          <div class="profile-image">
+            <img src="/img/logo.jpg" alt="Profile">
+          </div>
         </div>
-    </footer>
+        <div class="about-content">
+          <h1>Hi, I'm <span class="highlight">Rest</span></h1>
+          <h2>Developer</h2>
+          <p>
+            Hola, me llamo Younes y actualmente soy estudiante de ciberseguridad. tambien tengo conocimientos en lenguajes de programacion como pyhton java etc. Desde siempre e tenido interés por el mundo de la tecnología
+          </p>
+          <div class="button-group">
+            <a href="#contact" class="button primary">
+              Contactame
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </a>
+            <a href="#" class="button outline">
+               CV soon
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+            </a>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value">2+</div>
+              <div class="stat-label">Años Experiencia</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">5+</div>
+              <div class="stat-label">Proyectos Completas</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">10+</div>
+              <div class="stat-label">Clientes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Skills Section -->
+    <section id="skills" class="section">
+      <div class="section-header">
+        <h2>My Skills</h2>
+        <p>
+            He trabajado con diversas tecnologías y herramientas a lo largo de mi carrera.
+            A continuación, se presenta un resumen de mi experiencia técnica.
+        </p>
+      </div>
+      
+      <div class="skills-grid">
+        <div class="card">
+          <div class="card-header">
+            <h3>Frontend</h3>
+            <p>Creación de interfaces y experiencias de usuario</p>
+          </div>
+          <div class="card-content">
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>HTML</span>
+                <span>90%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress" style="width: 90%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>CSS</span>
+                <span>85%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>JavaScript</span>
+                <span>70%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>TypeScript</span>
+                <span>85%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress" style="width: 85%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h3>Backend</h3>
+            <p>Server-side y bases de datos</p>
+          </div>
+          <div class="card-content">
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>Lua</span>
+                <span>85%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress" style="width: 85%"></div>
+              </div>
+            </div>
 
-    <script src="script.js"></script>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>SQL</span>
+                <span>75%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress" style="width: 75%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card wide-card">
+          <div class="card-header">
+            <h3>Other Skills</h3>
+            <p>Otras habilidades</p>
+          </div>
+          <div class="card-content">
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>Ciberseguridad</span>
+                <span>85%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span>Redes</span>
+                <span>70%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress" style="width: 65%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="projects" class="section">
+      <div class="section-header">
+        <h2>Mis proyectos</h2>
+      </div>
+      
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-image">
+            <img src="/img/loststudi.png" alt="Lua language">
+          </div>
+          <div class="card-header">
+            <h3>Fivem SHOP</h3>
+            <p>Store de scripts de fiveM</p>
+          </div>
+          <div class="card-content">
+            <div class="tags">
+              <span class="tag">Lua</span>
+              <span class="tag">SQL</span>
+              <span class="tag">Mantenimiento</span>
+              <span class="tag">Soporte</span>
+              <span class="tag">Free/Paid</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a href="https://lost-network-store.tebex.io/" class="button outline small">
+              
+              STORE
+            </a>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-image">
+            <img src="/img/nmap-escaneo.png" alt="Task Management App">
+          </div>
+          <div class="card-header">
+            <h3>Escaneo de puertos</h3>
+            <p>Tengo experiencia en Shopify y en el mundo del e-commerce.</p>
+          </div>
+          <div class="card-content">
+            <div class="tags">
+              <span class="tag">100% Python</span>
+              <span class="tag">README.MD</span>
+
+            </div>
+          </div>
+          <div class="card-footer">
+            <a href="https://github.com/younesrest/network_scan.py" class="button outline small">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+              Code
+            </a>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <div class="project-image">
+            <img src="/img/ciberseguridad.jpg" alt="Weather Dashboard">
+          </div>
+          <div class="card-header">
+            <h3>Ciberseguridad</h3>
+            <p>Coming soon...</p>
+          </div>
+          <div class="card-content">
+            <div class="tags">
+
+          </div>
+
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+      <div class="section-header">
+        <h2>Contacto</h2>
+        <p>
+          
+¿Tienes un proyecto en mente o quieres hablar sobre posibles oportunidades? ¡No dudes en contactarnos!
+        </p>
+      </div>
+      
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-card">
+            <div class="icon-container">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
+            <div>
+              <h3>Location</h3>
+              <p>España</p>
+            </div>
+          </div>
+          
+          <div class="contact-card">
+            <div class="icon-container">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            </div>
+            <div>
+              <h3>Email</h3>
+              <p>youlal2019@gmail.com</p>
+            </div>
+          </div>
+          
+            <div>
+          </div>
+        </div>
+        
+        <div class="contact-form-container">
+          <div class="card">
+            <div class="card-header">
+              <h3>Enviar un mensaje</h3>
+              <p>Rellena el formulario a continuación y me pondré en contacto contigo lo antes posible.</p>
+            </div>
+            <div class="card-content">
+              <form id="contact-form" class="contact-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="name">Nombre</label>
+                    <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Tu email" required>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="subject">Tema</label>
+                  <input type="text" id="subject" name="subject" placeholder="Hablame sobre tu idea" required>
+                </div>
+                
+                <div class="form-group">
+                  <label for="message">Mensaje</label>
+                  <textarea id="message" name="message" placeholder="Tu mensjae" rows="5" required></textarea>
+                </div>
+                
+                <button type="submit" class="button primary full-width">Enviame Un mensaje</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="copyright">
+          © <span id="current-year"></span> Rest. All rights reserved.
+        </div>
+        <div class="footer-social">
+          <a href="https://github.com/younesrest" target="_blank" aria-label="GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+          </a>
+          <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          </a>
+          <a href="mailto:your.email@example.com" aria-label="Email">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="script.js"></script>
 </body>
 </html>
