@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest - Ciberseguridad & Programador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">REST</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link" data-section="home">Inicio</a>
+                <a href="#about" class="nav-link" data-section="about">Sobre Mí</a>
+                <a href="#projects" class="nav-link" data-section="projects">Proyectos</a>
+                <a href="#services" class="nav-link" data-section="services">Servicios</a>
+                <button class="nav-contact-btn" id="contactBtn">Contacto</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <canvas id="galaxyCanvas"></canvas>
+        <div class="hero-content">
+            <div class="hero-logo">REST</div>
+            <h1 class="hero-title animate-title">Ciberseguridad & Programación</h1>
+            <p class="hero-subtitle">Estudiante apasionado por la seguridad informática</p>
+        </div>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <canvas id="aboutCanvas"></canvas>
+        <div class="about-content">
+            <h2 class="section-title">Sobre Mí</h2>
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>Ciberseguridad</h3>
+                    <p>Estudiante dedicado a la seguridad informática. Especializado en análisis de vulnerabilidades, pentesting y protección de sistemas.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Programación</h3>
+                    <p>Desarrollo de aplicaciones con Python, JavaScript, C++. Apasionado por crear soluciones seguras y eficientes.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Experiencia</h3>
+                    <p>Proyectos de seguridad, scripts de automatización, aplicaciones web seguras y herramientas de pentesting.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <canvas id="projectsCanvas"></canvas>
+        <div class="projects-content">
+            <h2 class="section-title">Proyectos</h2>
+            <div class="projects-grid">
+                <div class="project-card" data-project="1">
+                    <div class="project-header">
+                        <h3>Herramienta de Análisis de Vulnerabilidades</h3>
+                        <span class="project-badge">Python</span>
+                    </div>
+                    <p>Script automatizado para escaneo de puertos y análisis de vulnerabilidades en redes locales.</p>
+                    <div class="project-tags">
+                        <span class="tag">Pentesting</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">Seguridad</span>
+                    </div>
+                </div>
+
+                <div class="project-card" data-project="2">
+                    <div class="project-header">
+                        <h3>Aplicación Web Segura</h3>
+                        <span class="project-badge">JavaScript</span>
+                    </div>
+                    <p>Plataforma de gestión de datos con autenticación, encriptación y protección contra ataques OWASP.</p>
+                    <div class="project-tags">
+                        <span class="tag">Web Security</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">Full-Stack</span>
+                    </div>
+                </div>
+
+                <div class="project-card" data-project="3">
+                    <div class="project-header">
+                        <h3>Malware Detector</h3>
+                        <span class="project-badge">C++</span>
+                    </div>
+                    <p>Programa en C++ para detección y análisis de amenazas maliciosas en sistemas Windows/Linux.</p>
+                    <div class="project-tags">
+                        <span class="tag">Malware Analysis</span>
+                        <span class="tag">C++</span>
+                        <span class="tag">Sistemas</span>
+                    </div>
+                </div>
+
+                <div class="project-card" data-project="4">
+                    <div class="project-header">
+                        <h3>Gestor de Contraseñas Encriptado</h3>
+                        <span class="project-badge">Full-Stack</span>
+                    </div>
+                    <p>Aplicación segura para almacenar y gestionar contraseñas con encriptación AES-256.</p>
+                    <div class="project-tags">
+                        <span class="tag">Criptografía</span>
+                        <span class="tag">Full-Stack</span>
+                        <span class="tag">Seguridad</span>
+                    </div>
+                </div>
+
+                <div class="project-card" data-project="5">
+                    <div class="project-header">
+                        <h3>Monitor de Red en Tiempo Real</h3>
+                        <span class="project-badge">Python</span>
+                    </div>
+                    <p>Herramienta de monitoreo de tráfico de red con alertas de actividad sospechosa.</p>
+                    <div class="project-tags">
+                        <span class="tag">Networking</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">Monitoreo</span>
+                    </div>
+                </div>
+
+                <div class="project-card" data-project="6">
+                    <div class="project-header">
+                        <h3>Auditor de Configuración SSL/TLS</h3>
+                        <span class="project-badge">Python</span>
+                    </div>
+                    <p>Script para auditoría de certificados SSL/TLS y evaluación de configuraciones seguras.</p>
+                    <div class="project-tags">
+                        <span class="tag">Criptografía</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">Auditoría</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <canvas id="servicesCanvas"></canvas>
+        <div class="services-content">
+            <h2 class="section-title">Servicios</h2>
+            <div class="services-container">
+                <div class="service-card">
+                    <h3>Auditoría de Seguridad</h3>
+                    <p>Análisis completo de sistemas y aplicaciones para identificar vulnerabilidades.</p>
+                    <span class="service-price">Consultar</span>
+                </div>
+                <div class="service-card">
+                    <h3>Desarrollo Seguro</h3>
+                    <p>Desarrollo de aplicaciones con mejores prácticas de seguridad incorporadas.</p>
+                    <span class="service-price">Consultar</span>
+                </div>
+                <div class="service-card">
+                    <h3>Pentesting</h3>
+                    <p>Pruebas de penetración y evaluación de seguridad ofensiva.</p>
+                    <span class="service-price">Consultar</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Contactame</h2>
+            <form id="contactForm" class="contact-form">
+                <div class="form-group">
+                    <label for="name">Nombre</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Asunto</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Mensaje</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Enviar Mensaje</button>
+            </form>
+            <div id="formMessage" class="form-message"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Rest - Ciberseguridad & Programación. Todos los derechos reservados.</p>
+            <div class="social-links">
+                <a href="https://github.com" target="_blank">GitHub</a>
+                <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+                <a href="https://twitter.com" target="_blank">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
