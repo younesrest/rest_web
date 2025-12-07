@@ -376,68 +376,95 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Visitor Tracking System - Fetch real IP and geolocation data
   async function fetchVisitorInfo() {
-    try {
-      // Fetch IP and location data from ipapi.co (free API)
-      const response = await fetch("https://ipapi.co/json/")
-      const data = await response.json()
+    const ipElement = document.getElementById("visitor-ip")
+    const locationElement = document.getElementById("visitor-location")
 
-      // Update IP Address
-      const ipElement = document.getElementById("visitor-ip")
-      if (ipElement) {
-        ipElement.textContent = data.ip || "N/A"
+    // Try multiple APIs as fallback
+    const apis = [
+      {
+        url: "https://api.ipify.org?format=json",
+        parser: async (ip) => {
+          // Get geolocation from ip-api.com
+          const geoResponse = await fetch(`http://ip-api.com/json/${ip}`)
+          const geoData = await geoResponse.json()
+          return {
+            ip: ip,
+            city: geoData.city,
+            country: geoData.country,
+          }
+        },
+      },
+      {
+        url: "https://ipapi.co/json/",
+        parser: async (response) => {
+          const data = await response.json()
+          return {
+            ip: data.ip,
+            city: data.city,
+            country: data.country_name,
+          }
+        },
+      },
+      {
+        url: "https://ipinfo.io/json",
+        parser: async (response) => {
+          const data = await response.json()
+          const [city, region] = (data.city || "Unknown").split(",")
+          return {
+            ip: data.ip,
+            city: city || "Unknown",
+            country: data.country || "Unknown",
+          }
+        },
+      },
+    ]
+
+    console.log("[v0] Starting visitor info fetch...")
+
+    for (const api of apis) {
+      try {
+        console.log(`[v0] Trying API: ${api.url}`)
+        const response = await fetch(api.url)
+
+        if (!response.ok) {
+          console.log(`[v0] API ${api.url} returned ${response.status}`)
+          continue
+        }
+
+        let data
+        if (api.url.includes("ipify")) {
+          const ipData = await response.json()
+          data = await api.parser(ipData.ip)
+        } else {
+          data = await api.parser(response)
+        }
+
+        console.log("[v0] Visitor info fetched successfully:", data)
+
+        if (ipElement) {
+          ipElement.textContent = data.ip || "Unable to detect"
+        }
+
+        if (locationElement) {
+          locationElement.textContent = `${data.city || "Unknown"}, ${data.country || "Unknown"}`
+        }
+
+        // Show success notification
+        notifications.show("Tracking Active", `Visitor detected from ${data.city || "Unknown"}`, "success", 3000)
+
+        return // Success, exit function
+      } catch (error) {
+        console.error(`[v0] Error with API ${api.url}:`, error)
+        continue // Try next API
       }
-
-      // Update Location
-      const locationElement = document.getElementById("visitor-location")
-      if (locationElement) {
-        locationElement.textContent = `${data.city || "Unknown"}, ${data.country_name || "Unknown"}`
-      }
-
-      console.log("[v0] Visitor info fetched:", data)
-    } catch (error) {
-      console.error("[v0] Error fetching visitor info:", error)
-      document.getElementById("visitor-ip").textContent = "Unable to detect"
-      document.getElementById("visitor-location").textContent = "Unable to detect"
-    }
-  }
-
-  function detectBrowser() {
-    const userAgent = navigator.userAgent
-    let browserName = "Unknown"
-
-    if (userAgent.indexOf("Firefox") > -1) {
-      browserName = "Firefox"
-    } else if (userAgent.indexOf("SamsungBrowser") > -1) {
-      browserName = "Samsung Internet"
-    } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
-      browserName = "Opera"
-    } else if (userAgent.indexOf("Trident") > -1) {
-      browserName = "IE"
-    } else if (userAgent.indexOf("Edge") > -1) {
-      browserName = "Edge Legacy"
-    } else if (userAgent.indexOf("Edg") > -1) {
-      browserName = "Edge"
-    } else if (userAgent.indexOf("Chrome") > -1) {
-      browserName = "Chrome"
-    } else if (userAgent.indexOf("Safari") > -1) {
-      browserName = "Safari"
     }
 
-    return browserName
-  }
+    // All APIs failed
+    console.error("[v0] All APIs failed")
+    if (ipElement) ipElement.textContent = "Unable to detect"
+    if (locationElement) locationElement.textContent = "Unable to detect"
 
-  function detectOS() {
-    const userAgent = navigator.userAgent
-    const platform = navigator.platform
-    let osName = "Unknown"
-
-    if (userAgent.indexOf("Win") !== -1) osName = "Windows"
-    else if (userAgent.indexOf("Mac") !== -1) osName = "macOS"
-    else if (userAgent.indexOf("Linux") !== -1) osName = "Linux"
-    else if (userAgent.indexOf("Android") !== -1) osName = "Android"
-    else if (userAgent.indexOf("like Mac") !== -1) osName = "iOS"
-
-    return osName
+    notifications.show("Tracking Unavailable", "Unable to detect visitor information", "warning", 4000)
   }
 
   fetchVisitorInfo()
@@ -452,3 +479,42 @@ document.addEventListener("DOMContentLoaded", () => {
     osElement.textContent = detectOS()
   }
 })
+
+function detectBrowser() {
+  const userAgent = navigator.userAgent
+  let browserName = "Unknown"
+
+  if (userAgent.indexOf("Firefox") > -1) {
+    browserName = "Firefox"
+  } else if (userAgent.indexOf("SamsungBrowser") > -1) {
+    browserName = "Samsung Internet"
+  } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+    browserName = "Opera"
+  } else if (userAgent.indexOf("Trident") > -1) {
+    browserName = "IE"
+  } else if (userAgent.indexOf("Edge") > -1) {
+    browserName = "Edge Legacy"
+  } else if (userAgent.indexOf("Edg") > -1) {
+    browserName = "Edge"
+  } else if (userAgent.indexOf("Chrome") > -1) {
+    browserName = "Chrome"
+  } else if (userAgent.indexOf("Safari") > -1) {
+    browserName = "Safari"
+  }
+
+  return browserName
+}
+
+function detectOS() {
+  const userAgent = navigator.userAgent
+  const platform = navigator.platform
+  let osName = "Unknown"
+
+  if (userAgent.indexOf("Win") !== -1) osName = "Windows"
+  else if (userAgent.indexOf("Mac") !== -1) osName = "macOS"
+  else if (userAgent.indexOf("Linux") !== -1) osName = "Linux"
+  else if (userAgent.indexOf("Android") !== -1) osName = "Android"
+  else if (userAgent.indexOf("like Mac") !== -1) osName = "iOS"
+
+  return osName
+}
