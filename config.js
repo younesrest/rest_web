@@ -16,7 +16,7 @@ const CONFIG = {
     
     // Contraseña (cámbiala por una segura)
     // Tip: Usa algo largo y único
-    password: 'CyberRest2024!',
+    password: 'rest',
     
     // Máximo intentos de login antes de bloquear (5 minutos)
     maxAttempts: 5
