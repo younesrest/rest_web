@@ -1,109 +1,92 @@
-# 🚀 Rest Portfolio - Versión Mejorada
+# 🔐 Rest Portfolio - Versión 2.0
 
-Portfolio personal con sistema de tracking de visitantes y envío de emails funcional.
-
-## ✨ Características Nuevas
-
-### 1. 📊 Sistema de Tracking de Visitantes
-- Registra automáticamente todos los visitantes
-- Muestra: IP, ubicación, navegador, sistema operativo, ISP, timezone
-- Los datos se guardan en localStorage (máximo 1000 visitantes)
-- Panel de administración para ver todos los datos
-
-### 2. 📧 Envío de Correos Electrónicos
-- Integración con **EmailJS** (gratuito, 200 emails/mes)
-- Los mensajes también se guardan localmente como backup
-- Notificaciones de éxito/error
-
-### 3. 🔐 Panel de Administración
-- Accede desde: `tu-sitio.com/admin.html`
-- Contraseña por defecto: `rest2024admin` (¡cámbiala en config.js!)
-- Ver todos los visitantes
-- Ver todos los mensajes recibidos
-- Exportar datos a JSON
-- Borrar datos
-
-### 4. 🎨 Mejoras de Código
-- Código más limpio y organizado
-- Mejor rendimiento
-- Animaciones suaves
-- Diseño responsive mejorado
-- Accesibilidad mejorada
+Portfolio personal con estética cybersecurity, tracking de visitantes y sistema de mensajes.
 
 ---
 
-## 🔧 Configuración
+## ✨ Características
 
-### Paso 1: Configurar EmailJS (para enviar correos)
+### 🌐 Tracking de Visitantes (MEJORADO)
+- **Múltiples APIs** para obtener la IP (ipify, ipapi.co, ip-api.com)
+- Funciona en móvil y escritorio
+- Detecta: IP, ubicación, navegador, sistema operativo, ISP, zona horaria
+- Guarda hasta 500 visitantes
 
-1. Ve a [https://www.emailjs.com/](https://www.emailjs.com/) y crea una cuenta gratuita
+### 🔐 Panel de Administración SEGURO
+- **Usuario + Contraseña** para acceder
+- Bloqueo después de 5 intentos fallidos (5 minutos)
+- Sin enlaces visibles - acceso secreto
 
-2. En el dashboard, ve a **"Email Services"** y conecta tu Gmail:
-   - Click en "Add New Service"
-   - Selecciona "Gmail"
-   - Autoriza tu cuenta de Gmail
-   - Copia el **Service ID** (ej: `service_abc123`)
+### 🎨 Diseño Cybersecurity
+- Efecto Matrix en el fondo
+- Colores verdes neón (tema oscuro)
+- Animaciones suaves
+- 100% responsive
 
-3. Ve a **"Email Templates"** y crea una plantilla:
-   - Click en "Create New Template"
-   - En el contenido del email, usa estas variables:
-   ```
-   De: {{from_name}} ({{from_email}})
-   Asunto: {{subject}}
-   
-   Mensaje:
-   {{message}}
-   ```
-   - Guarda y copia el **Template ID** (ej: `template_xyz789`)
+### 📧 Envío de Correos
+- Integración con EmailJS
+- Backup local de mensajes
 
-4. Ve a **"Account"** > **"API Keys"** y copia tu **Public Key**
+---
 
-5. Abre el archivo `config.js` y reemplaza los valores:
-   ```javascript
-   emailjs: {
-     publicKey: 'TU_PUBLIC_KEY_AQUI',     // Pega tu Public Key
-     serviceId: 'TU_SERVICE_ID_AQUI',      // Pega tu Service ID
-     templateId: 'TU_TEMPLATE_ID_AQUI',    // Pega tu Template ID
-     toEmail: 'tu-email@gmail.com'         // Tu email donde recibes mensajes
-   }
-   ```
+## 🚀 Cómo Acceder al Panel de Admin
 
-### Paso 2: Cambiar la Contraseña del Admin
+### Método Secreto:
+**Haz click 5 veces en el logo [Rest_]** de la página principal
 
-En `config.js`, cambia la contraseña por una segura:
+Esto te llevará al panel de login donde introduces tu usuario y contraseña.
+
+---
+
+## ⚙️ Configuración
+
+### 1. Cambiar credenciales (¡IMPORTANTE!)
+
+Abre `config.js` y cambia:
+
 ```javascript
 admin: {
-  password: 'tu-contraseña-segura-aqui'
+  username: 'tu_usuario',        // Cambia esto
+  password: 'tu_contraseña',     // Cambia esto
+  maxAttempts: 5
 }
 ```
 
-### Paso 3: (Opcional) Configurar Webhook de Discord
+### 2. Configurar EmailJS (opcional)
 
-Si quieres recibir notificaciones de visitantes en Discord:
+Para que el formulario envíe correos reales:
 
-1. En tu servidor de Discord, ve a Configuración del Canal > Integraciones > Webhooks
-2. Crea un nuevo Webhook y copia la URL
-3. En `config.js`:
-   ```javascript
-   webhook: {
-     enabled: true,
-     url: 'https://discord.com/api/webhooks/...'
-   }
-   ```
+1. Crea cuenta en [emailjs.com](https://www.emailjs.com/)
+2. Conecta tu Gmail
+3. Crea una plantilla con estas variables:
+   - `{{from_name}}`
+   - `{{from_email}}`
+   - `{{subject}}`
+   - `{{message}}`
+4. Copia las credenciales en `config.js`:
+
+```javascript
+emailjs: {
+  publicKey: 'tu_public_key',
+  serviceId: 'tu_service_id',
+  templateId: 'tu_template_id',
+  toEmail: 'tu@email.com'
+}
+```
 
 ---
 
-## 📁 Estructura de Archivos
+## 📁 Archivos
 
 ```
 rests.info_mejorada/
-├── index.html       # Página principal
-├── admin.html       # Panel de administración
-├── styles.css       # Estilos CSS
-├── script.js        # JavaScript principal
-├── config.js        # ⚠️ CONFIGURACIÓN (editar este archivo)
-├── logo.jpg         # Tu foto de perfil
-├── pomodoro.png     # Imagen proyecto
+├── index.html      # Página principal
+├── panel.html      # Panel de admin (acceso secreto)
+├── styles.css      # Estilos
+├── script.js       # JavaScript principal
+├── config.js       # ⚠️ CONFIGURACIÓN
+├── logo.jpg        # Tu foto
+├── pomodoro.png    # Imagen proyecto
 └── img/
     ├── ciberseguridad.jpg
     └── nmap-escaneo.png
@@ -111,67 +94,62 @@ rests.info_mejorada/
 
 ---
 
-## 🚀 Despliegue
+## 🔒 Seguridad
 
-### Opción 1: GitHub Pages (Gratis)
-1. Sube los archivos a un repositorio de GitHub
-2. Ve a Settings > Pages
-3. Selecciona "Deploy from a branch" > "main" > "/ (root)"
-4. Tu sitio estará en: `https://tu-usuario.github.io/tu-repo`
+### Protecciones implementadas:
 
-### Opción 2: Netlify (Gratis)
-1. Ve a [netlify.com](https://www.netlify.com/)
-2. Arrastra la carpeta del proyecto
-3. ¡Listo! Te dan un dominio automático
+1. **XSS Prevention** - Todo el contenido se escapa antes de mostrarse
+2. **Rate Limiting** - Bloqueo después de intentos fallidos
+3. **Acceso oculto** - No hay enlaces al panel
+4. **Sanitización** - Todos los inputs se limpian
 
-### Opción 3: Tu propio dominio
-Simplemente sube los archivos a tu hosting
+### Recomendaciones:
 
----
-
-## ⚠️ Notas Importantes
-
-1. **Los datos de visitantes se guardan en el navegador del visitante** (localStorage). Esto significa:
-   - Cada visitante solo puede ver sus propios datos
-   - Los datos del admin se guardan en TU navegador
-   - Si limpias el navegador, pierdes los datos
-
-2. **Para un tracking más avanzado**, considera usar:
-   - Google Analytics (gratuito)
-   - Plausible Analytics (de pago, más privado)
-   - Un backend propio con base de datos
-
-3. **Seguridad**:
-   - La contraseña del admin se guarda en el código (no es seguro para producción seria)
-   - Para mayor seguridad, considera un backend real
+- ✅ Cambia el usuario y contraseña por defecto
+- ✅ Usa contraseñas largas y únicas
+- ✅ El archivo `config.js` contiene tus credenciales, pero en GitHub Pages es visible. Usa credenciales que no uses en otros sitios.
 
 ---
 
-## 🐛 Solución de Problemas
+## 📱 Tracking en Móvil
 
-### Los emails no se envían
-1. Verifica que las credenciales de EmailJS estén correctas
-2. Revisa la consola del navegador (F12) para ver errores
-3. Asegúrate de haber verificado tu email en EmailJS
+El tracking funciona en móvil usando múltiples APIs:
 
-### No veo visitantes en el admin
-1. Primero visita tu página normal (index.html) para generar datos
-2. Luego ve al admin para verlos
-3. Los datos se guardan en el navegador donde se visualizan
+1. Primero intenta `api.ipify.org`
+2. Si falla, intenta `ipapi.co`
+3. Si falla, intenta `ip-api.com`
 
-### El mapa no carga
-- Asegúrate de tener conexión a internet
-- Leaflet necesita cargar tiles de OpenStreetMap
+Si todas fallan (por ejemplo, sin conexión), muestra los datos del navegador que sí puede detectar localmente.
+
+---
+
+## 🎯 Subir a GitHub Pages
+
+1. Crea un repositorio en GitHub
+2. Sube todos los archivos
+3. Ve a Settings > Pages
+4. Selecciona "Deploy from branch" > "main" > "/ (root)"
+5. Tu sitio estará en: `https://tu-usuario.github.io/tu-repo`
+
+---
+
+## 💡 Tips
+
+- **Para acceder al admin**: Click 5 veces en el logo
+- **Los datos se guardan** en el navegador del admin (localStorage)
+- **Exporta regularmente** los datos desde el panel
+- **El tema oscuro** es el predeterminado pero hay tema claro
 
 ---
 
 ## 📞 Soporte
 
-Si tienes problemas, puedes:
-1. Revisar la consola del navegador (F12 > Console)
-2. Verificar que todos los archivos estén correctamente subidos
-3. Asegurarte de que `config.js` tenga la configuración correcta
+Si algo no funciona:
+
+1. Abre la consola del navegador (F12 > Console)
+2. Revisa si hay errores en rojo
+3. Asegúrate de que todos los archivos estén subidos correctamente
 
 ---
 
-¡Disfruta tu nuevo portfolio! 🎉
+¡Disfruta tu nuevo portfolio! 🚀
