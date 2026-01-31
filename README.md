@@ -1,3 +1,0 @@
-Rest portfolio 
-
-All copyrights for rest
