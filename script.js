@@ -1,454 +1,697 @@
-class NotificationSystem {
-  constructor() {
-    this.container = document.getElementById("notification-container")
-    this.notifications = []
-  }
+/* ========================================
+   Storage Keys & Config
+======================================== */
+const STORAGE_KEYS = {
+  visitors: 'rest_visitors',
+  messages: 'rest_messages',
+  loginAttempts: 'rest_login_attempts',
+  isLoggedIn: 'rest_logged_in'
+};
 
-  show(title, message, type = "info", duration = 5000) {
-    const notification = document.createElement("div")
-    notification.className = `notification ${type}`
+const CONFIG = {
+  username: 'rest',
+  password: 'CyberRest2024!',
+  maxLoginAttempts: 5,
+  lockoutTime: 5 * 60 * 1000 // 5 minutes
+};
 
-    const icon = this.getIcon(type)
-
-    notification.innerHTML = `
-      <div class="notification-icon">${icon}</div>
-      <div class="notification-content">
-        <div class="notification-title">${title}</div>
-        <div class="notification-message">${message}</div>
-      </div>
-      <button class="notification-close" aria-label="Close">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    `
-
-    const closeBtn = notification.querySelector(".notification-close")
-    closeBtn.addEventListener("click", () => this.remove(notification))
-
-    this.container.appendChild(notification)
-    this.notifications.push(notification)
-
-    if (duration > 0) {
-      setTimeout(() => this.remove(notification), duration)
-    }
-
-    return notification
-  }
-
-  getIcon(type) {
-    const icons = {
-      success: "✓",
-      info: "ℹ",
-      warning: "⚠",
-      error: "✕",
-    }
-    return icons[type] || icons.info
-  }
-
-  remove(notification) {
-    notification.style.animation = "slideOut 0.3s ease-out"
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.parentNode.removeChild(notification)
-      }
-      const index = this.notifications.indexOf(notification)
-      if (index > -1) {
-        this.notifications.splice(index, 1)
-      }
-    }, 300)
+/* ========================================
+   Utility Functions
+======================================== */
+function getStorage(key) {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : null;
+  } catch {
+    return null;
   }
 }
 
-// Initialize notification system
-const notifications = new NotificationSystem()
+function setStorage(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.error('Storage error:', e);
+  }
+}
 
-// Canvas Background and Portfolio Functionality
-document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("background-canvas")
-  const ctx = canvas.getContext("2d")
+function formatDate(date) {
+  return new Date(date).toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+/* ========================================
+   Matrix Background Effect
+======================================== */
+function initMatrixBackground() {
+  const canvas = document.getElementById('matrix-bg');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789';
+  const charArray = chars.split('');
+  const fontSize = 14;
+  const columns = canvas.width / fontSize;
+  const drops = [];
+
+  for (let i = 0; i < columns; i++) {
+    drops[i] = Math.random() * -100;
   }
 
-  resizeCanvas()
-  window.addEventListener("resize", resizeCanvas)
+  function draw() {
+    ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  class Particle {
-    constructor() {
-      this.x = Math.random() * canvas.width
-      this.y = Math.random() * canvas.height
-      this.size = Math.random() * 2 + 1
-      this.speedX = (Math.random() - 0.5) * 0.3
-      this.speedY = (Math.random() - 0.5) * 0.3
+    ctx.fillStyle = '#00ff88';
+    ctx.font = `${fontSize}px monospace`;
 
-      const isDarkTheme = document.documentElement.classList.contains("dark-theme")
-      this.color = isDarkTheme
-        ? `rgba(96, 165, 250, ${Math.random() * 0.4 + 0.1})`
-        : `rgba(59, 130, 246, ${Math.random() * 0.3 + 0.1})`
-    }
+    for (let i = 0; i < drops.length; i++) {
+      const char = charArray[Math.floor(Math.random() * charArray.length)];
+      ctx.fillText(char, i * fontSize, drops[i] * fontSize);
 
-    update() {
-      this.x += this.speedX
-      this.y += this.speedY
-
-      if (this.x > canvas.width || this.x < 0) {
-        this.speedX = -this.speedX
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
       }
-
-      if (this.y > canvas.height || this.y < 0) {
-        this.speedY = -this.speedY
-      }
-    }
-
-    draw() {
-      ctx.fillStyle = this.color
-      ctx.beginPath()
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-      ctx.fill()
+      drops[i]++;
     }
   }
 
-  const particleCount = Math.min(80, Math.floor((window.innerWidth * window.innerHeight) / 12000))
-  let particles = []
+  setInterval(draw, 50);
 
-  function createParticles() {
-    particles = []
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle())
-    }
-  }
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+}
 
-  createParticles()
+/* ========================================
+   Typewriter Effect
+======================================== */
+function initTypewriter() {
+  const element = document.getElementById('typewriter');
+  if (!element) return;
 
-  function connectParticles() {
-    const maxDistance = 150
-    const isDarkTheme = document.documentElement.classList.contains("dark-theme")
+  const words = ['Rest', 'Hacker', 'Developer', 'Security'];
+  let wordIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
 
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x
-        const dy = particles[i].y - particles[j].y
-        const distance = Math.sqrt(dx * dx + dy * dy)
+  function type() {
+    const currentWord = words[wordIndex];
 
-        if (distance < maxDistance) {
-          const opacity = 1 - distance / maxDistance
-          const strokeColor = isDarkTheme
-            ? `rgba(96, 165, 250, ${opacity * 0.15})`
-            : `rgba(59, 130, 246, ${opacity * 0.12})`
-
-          ctx.strokeStyle = strokeColor
-          ctx.lineWidth = 1
-          ctx.beginPath()
-          ctx.moveTo(particles[i].x, particles[i].y)
-          ctx.lineTo(particles[j].x, particles[j].y)
-          ctx.stroke()
-        }
-      }
-    }
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    for (const particle of particles) {
-      particle.update()
-      particle.draw()
+    if (isDeleting) {
+      element.textContent = currentWord.substring(0, charIndex - 1);
+      charIndex--;
+    } else {
+      element.textContent = currentWord.substring(0, charIndex + 1);
+      charIndex++;
     }
 
-    connectParticles()
-    requestAnimationFrame(animate)
+    let typeSpeed = isDeleting ? 50 : 100;
+
+    if (!isDeleting && charIndex === currentWord.length) {
+      typeSpeed = 2000;
+      isDeleting = true;
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      wordIndex = (wordIndex + 1) % words.length;
+      typeSpeed = 500;
+    }
+
+    setTimeout(type, typeSpeed);
   }
 
-  animate()
+  type();
+}
 
-  // Theme Toggle
-  const themeToggle = document.getElementById("theme-toggle")
-  const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)")
-  const savedTheme = localStorage.getItem("theme")
+/* ========================================
+   IP Tracker
+======================================== */
+async function trackVisitor() {
+  const statusEl = document.getElementById('connection-status');
+  
+  try {
+    // Get IP info from API
+    const response = await fetch('https://ipapi.co/json/');
+    const data = await response.json();
 
-  if (savedTheme === "dark" || (!savedTheme && prefersDarkScheme.matches)) {
-    document.documentElement.classList.add("dark-theme")
-  } else {
-    document.documentElement.classList.remove("dark-theme")
+    // Get browser and OS info
+    const ua = navigator.userAgent;
+    const browser = getBrowser(ua);
+    const os = getOS(ua);
+
+    // Update UI
+    updateElement('user-ip', data.ip || 'Desconocida');
+    updateElement('user-location', `${data.city || 'N/A'}, ${data.country_name || 'N/A'}`);
+    updateElement('user-browser', browser);
+    updateElement('user-os', os);
+    updateElement('user-isp', data.org || 'Desconocido');
+    updateElement('user-timezone', data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+    if (statusEl) {
+      statusEl.innerHTML = '<span class="status-dot"></span>Conectado';
+    }
+
+    // Save visitor data
+    const visitor = {
+      id: generateId(),
+      ip: data.ip,
+      location: `${data.city || 'N/A'}, ${data.country_name || 'N/A'}`,
+      browser,
+      os,
+      isp: data.org || 'Desconocido',
+      timezone: data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timestamp: new Date().toISOString()
+    };
+
+    const visitors = getStorage(STORAGE_KEYS.visitors) || [];
+    
+    // Check if this IP was already tracked today
+    const today = new Date().toDateString();
+    const alreadyTracked = visitors.some(v => 
+      v.ip === visitor.ip && new Date(v.timestamp).toDateString() === today
+    );
+
+    if (!alreadyTracked) {
+      visitors.unshift(visitor);
+      setStorage(STORAGE_KEYS.visitors, visitors);
+    }
+
+  } catch (error) {
+    console.error('Error tracking visitor:', error);
+    
+    updateElement('user-ip', 'Error');
+    updateElement('user-location', 'Error');
+    updateElement('user-browser', getBrowser(navigator.userAgent));
+    updateElement('user-os', getOS(navigator.userAgent));
+    updateElement('user-isp', 'Error');
+    updateElement('user-timezone', Intl.DateTimeFormat().resolvedOptions().timeZone);
+
+    if (statusEl) {
+      statusEl.innerHTML = '<span class="status-dot" style="background: var(--destructive);"></span>Error';
+    }
   }
+}
 
-  if (themeToggle) {
-    themeToggle.addEventListener("click", (e) => {
-      e.preventDefault()
-      e.stopPropagation()
+function updateElement(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
 
-      document.documentElement.classList.toggle("dark-theme")
+function getBrowser(ua) {
+  if (ua.includes('Firefox')) return 'Firefox';
+  if (ua.includes('Edg')) return 'Edge';
+  if (ua.includes('Chrome')) return 'Chrome';
+  if (ua.includes('Safari')) return 'Safari';
+  if (ua.includes('Opera') || ua.includes('OPR')) return 'Opera';
+  return 'Desconocido';
+}
 
-      const isDarkTheme = document.documentElement.classList.contains("dark-theme")
-      localStorage.setItem("theme", isDarkTheme ? "dark" : "light")
+function getOS(ua) {
+  if (ua.includes('Windows NT 10')) return 'Windows 10/11';
+  if (ua.includes('Windows')) return 'Windows';
+  if (ua.includes('Mac OS X')) return 'macOS';
+  if (ua.includes('Linux')) return 'Linux';
+  if (ua.includes('Android')) return 'Android';
+  if (ua.includes('iOS') || ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
+  return 'Desconocido';
+}
 
-      createParticles()
+/* ========================================
+   Contact Form
+======================================== */
+function initContactForm() {
+  const form = document.getElementById('contact-form');
+  if (!form) return;
 
-      notifications.show("Theme Changed", `Switched to ${isDarkTheme ? "dark" : "light"} mode`, "success", 3000)
-    })
-  }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  // Navigation
-  const navLinks = document.querySelectorAll(".nav-link")
+    const btn = document.getElementById('submit-btn');
+    const messageEl = document.getElementById('form-message');
+    
+    const formData = {
+      id: generateId(),
+      name: document.getElementById('name').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      subject: document.getElementById('subject').value.trim(),
+      message: document.getElementById('message').value.trim(),
+      timestamp: new Date().toISOString(),
+      read: false
+    };
 
-  navLinks.forEach((link) => {
-    link.addEventListener("click", function () {
-      const sectionId = this.getAttribute("data-section")
-      const section = document.getElementById(sectionId)
+    // Validate
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      showFormMessage(messageEl, 'Por favor, completa todos los campos.', 'error');
+      return;
+    }
 
-      if (section) {
-        window.scrollTo({
-          top: section.offsetTop - 100,
-          behavior: "smooth",
-        })
-      }
-    })
-  })
+    // Show loading
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="icon spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Enviando...';
 
-  function handleScroll() {
-    const scrollPosition = window.scrollY + 200
-    const sections = document.querySelectorAll("section")
+    // Simulate sending delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    sections.forEach((section) => {
-      const sectionTop = section.offsetTop
-      const sectionHeight = section.offsetHeight
+    // Save message
+    const messages = getStorage(STORAGE_KEYS.messages) || [];
+    messages.unshift(formData);
+    setStorage(STORAGE_KEYS.messages, messages);
 
-      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-        const sectionId = section.getAttribute("id")
+    // Show success
+    showFormMessage(messageEl, 'Mensaje enviado correctamente. Te respondere pronto.', 'success');
+    form.reset();
 
-        navLinks.forEach((link) => {
-          link.classList.remove("active")
-          if (link.getAttribute("data-section") === sectionId) {
-            link.classList.add("active")
-          }
-        })
-      }
-    })
-  }
+    // Reset button
+    btn.disabled = false;
+    btn.innerHTML = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar Mensaje';
+  });
+}
 
-  window.addEventListener("scroll", handleScroll)
-
-  const mapElement = document.getElementById("map")
-  const L = window.L // Declare the L variable here
-  if (mapElement && L) {
-    // Check if L is defined
-    // Madrid, Spain coordinates
-    const madridCoords = [40.4168, -3.7038]
-
-    const map = L.map("map", {
-      center: madridCoords,
-      zoom: 6,
-      zoomControl: true,
-      scrollWheelZoom: false,
-    })
-
-    // Use dark or light map tiles based on theme
-    const isDarkTheme = document.documentElement.classList.contains("dark-theme")
-    const tileLayer = isDarkTheme
-      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-      : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-
-    L.tileLayer(tileLayer, {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 19,
-    }).addTo(map)
-
-    // Custom marker
-    const marker = L.marker(madridCoords).addTo(map)
-    marker.bindPopup("<b>Madrid, Spain</b><br>I'm based here!").openPopup()
-
-    // Update map tiles when theme changes
-    const originalThemeToggle = themeToggle.onclick
-    themeToggle.addEventListener("click", () => {
-      setTimeout(() => {
-        const isDark = document.documentElement.classList.contains("dark-theme")
-        const newTileLayer = isDark
-          ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-
-        map.eachLayer((layer) => {
-          if (layer instanceof L.TileLayer) {
-            map.removeLayer(layer)
-          }
-        })
-
-        L.tileLayer(newTileLayer, {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          maxZoom: 19,
-        }).addTo(map)
-
-        marker.addTo(map)
-      }, 300)
-    })
-  }
-
-  const githubLink = document.getElementById("github-link")
-  if (githubLink) {
-    let clickCount = 0
-    const messages = [
-      { title: "🎉 Awesome!", message: "Check out my latest projects on GitHub!" },
-      { title: "🚀 Thanks!", message: "Star my repos if you find them useful!" },
-      { title: "💻 Cool!", message: "Open source contributions welcome!" },
-      { title: "⭐ Nice!", message: "Follow me for more interesting projects!" },
-      { title: "🔥 Great!", message: "Let's build something amazing together!" },
-    ]
-
-    githubLink.addEventListener("click", (e) => {
-      const message = messages[clickCount % messages.length]
-      notifications.show(message.title, message.message, "info", 4000)
-      clickCount++
-    })
-  }
-
-  // Show welcome notification
+function showFormMessage(el, message, type) {
+  if (!el) return;
+  el.textContent = message;
+  el.className = `form-message ${type}`;
+  
   setTimeout(() => {
-    notifications.show(
-      "👋 Welcome!",
-      "Thanks for visiting my portfolio. Check out my GitHub for cool projects!",
-      "info",
-      6000,
-    )
-  }, 1000)
+    el.className = 'form-message';
+  }, 5000);
+}
 
-  // Random GitHub reminder notifications
-  setInterval(() => {
-    if (Math.random() > 0.7) {
-      const reminders = [
-        { title: "💡 Tip", message: "Don't forget to check my GitHub profile!" },
-        { title: "🎯 Reminder", message: "New projects added on GitHub regularly!" },
-        { title: "✨ Hey!", message: "Star my repos if you like them!" },
-      ]
-      const reminder = reminders[Math.floor(Math.random() * reminders.length)]
-      notifications.show(reminder.title, reminder.message, "info", 5000)
+/* ========================================
+   Secret Logo Access
+======================================== */
+function initSecretLogo() {
+  const logo = document.getElementById('secret-logo');
+  if (!logo) return;
+
+  let clickCount = 0;
+  let clickTimer = null;
+
+  logo.addEventListener('click', (e) => {
+    e.preventDefault();
+    clickCount++;
+
+    if (clickTimer) clearTimeout(clickTimer);
+
+    clickTimer = setTimeout(() => {
+      clickCount = 0;
+    }, 2000);
+
+    if (clickCount >= 5) {
+      window.location.href = 'panel.html';
     }
-  }, 30000) // Every 30 seconds
+  });
+}
 
-  // Contact form
-  const contactForm = document.getElementById("contact-form")
+/* ========================================
+   Login System
+======================================== */
+function initLogin() {
+  const loginForm = document.getElementById('login-form');
+  const togglePassword = document.getElementById('toggle-password');
+  const passwordInput = document.getElementById('login-pass');
+  
+  if (!loginForm) return;
 
-  if (contactForm) {
-    contactForm.addEventListener("submit", (e) => {
-      e.preventDefault()
-
-      const formData = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        subject: document.getElementById("subject").value,
-        message: document.getElementById("message").value,
-      }
-
-      if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-        notifications.show("Error", "Please fill in all fields.", "warning", 4000)
-        return
-      }
-
-      const submitButton = contactForm.querySelector('button[type="submit"]')
-      const originalText = submitButton.textContent
-
-      submitButton.textContent = "Sending..."
-      submitButton.disabled = true
-
-      // Simulate sending
-      setTimeout(() => {
-        notifications.show("✓ Message Sent!", "Thanks for reaching out! I'll get back to you soon.", "success", 5000)
-        contactForm.reset()
-        submitButton.textContent = originalText
-        submitButton.disabled = false
-      }, 1500)
-    })
+  // Check if already logged in
+  if (getStorage(STORAGE_KEYS.isLoggedIn)) {
+    showDashboard();
+    return;
   }
 
-  // Set current year
-  document.getElementById("current-year").textContent = new Date().getFullYear()
+  // Toggle password visibility
+  if (togglePassword && passwordInput) {
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+    });
+  }
 
-  // Listen for system theme changes
-  prefersDarkScheme.addEventListener("change", (e) => {
-    if (!localStorage.getItem("theme")) {
-      if (e.matches) {
-        document.documentElement.classList.add("dark-theme")
+  // Login form submit
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('login-user').value.trim();
+    const password = document.getElementById('login-pass').value;
+    const errorEl = document.getElementById('login-error');
+    const btn = document.getElementById('login-btn');
+
+    // Check lockout
+    const attempts = getStorage(STORAGE_KEYS.loginAttempts) || { count: 0, lastAttempt: 0 };
+    const now = Date.now();
+
+    if (attempts.count >= CONFIG.maxLoginAttempts) {
+      const timeLeft = CONFIG.lockoutTime - (now - attempts.lastAttempt);
+      if (timeLeft > 0) {
+        const minutes = Math.ceil(timeLeft / 60000);
+        showLoginError(errorEl, `Demasiados intentos. Espera ${minutes} minuto(s).`);
+        return;
       } else {
-        document.documentElement.classList.remove("dark-theme")
+        // Reset after lockout
+        attempts.count = 0;
       }
-      createParticles()
-    }
-  })
-
-  // Visitor Tracking System - Fetch real IP and geolocation data
-  async function fetchVisitorInfo() {
-    try {
-      // Fetch IP and location data from ipapi.co (free API)
-      const response = await fetch("https://ipapi.co/json/")
-      const data = await response.json()
-
-      // Update IP Address
-      const ipElement = document.getElementById("visitor-ip")
-      if (ipElement) {
-        ipElement.textContent = data.ip || "N/A"
-      }
-
-      // Update Location
-      const locationElement = document.getElementById("visitor-location")
-      if (locationElement) {
-        locationElement.textContent = `${data.city || "Unknown"}, ${data.country_name || "Unknown"}`
-      }
-
-      console.log("[v0] Visitor info fetched:", data)
-    } catch (error) {
-      console.error("[v0] Error fetching visitor info:", error)
-      document.getElementById("visitor-ip").textContent = "Unable to detect"
-      document.getElementById("visitor-location").textContent = "Unable to detect"
-    }
-  }
-
-  function detectBrowser() {
-    const userAgent = navigator.userAgent
-    let browserName = "Unknown"
-
-    if (userAgent.indexOf("Firefox") > -1) {
-      browserName = "Firefox"
-    } else if (userAgent.indexOf("SamsungBrowser") > -1) {
-      browserName = "Samsung Internet"
-    } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
-      browserName = "Opera"
-    } else if (userAgent.indexOf("Trident") > -1) {
-      browserName = "IE"
-    } else if (userAgent.indexOf("Edge") > -1) {
-      browserName = "Edge Legacy"
-    } else if (userAgent.indexOf("Edg") > -1) {
-      browserName = "Edge"
-    } else if (userAgent.indexOf("Chrome") > -1) {
-      browserName = "Chrome"
-    } else if (userAgent.indexOf("Safari") > -1) {
-      browserName = "Safari"
     }
 
-    return browserName
+    // Validate credentials
+    if (username === CONFIG.username && password === CONFIG.password) {
+      // Reset attempts
+      setStorage(STORAGE_KEYS.loginAttempts, { count: 0, lastAttempt: 0 });
+      setStorage(STORAGE_KEYS.isLoggedIn, true);
+      showDashboard();
+    } else {
+      // Increment attempts
+      attempts.count++;
+      attempts.lastAttempt = now;
+      setStorage(STORAGE_KEYS.loginAttempts, attempts);
+
+      const remaining = CONFIG.maxLoginAttempts - attempts.count;
+      if (remaining > 0) {
+        showLoginError(errorEl, `Credenciales incorrectas. ${remaining} intento(s) restante(s).`);
+      } else {
+        showLoginError(errorEl, 'Cuenta bloqueada por 5 minutos.');
+      }
+    }
+  });
+}
+
+function showLoginError(el, message) {
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add('show');
+}
+
+function showDashboard() {
+  const loginSection = document.getElementById('login-section');
+  const dashboardSection = document.getElementById('dashboard-section');
+
+  if (loginSection) loginSection.style.display = 'none';
+  if (dashboardSection) dashboardSection.style.display = 'block';
+
+  initDashboard();
+}
+
+/* ========================================
+   Dashboard
+======================================== */
+function initDashboard() {
+  updateStats();
+  renderVisitors();
+  renderMessages();
+  initTabs();
+  initSearch();
+  initDashboardActions();
+}
+
+function updateStats() {
+  const visitors = getStorage(STORAGE_KEYS.visitors) || [];
+  const messages = getStorage(STORAGE_KEYS.messages) || [];
+  const today = new Date().toDateString();
+
+  const todayVisitors = visitors.filter(v => 
+    new Date(v.timestamp).toDateString() === today
+  ).length;
+
+  const unreadMessages = messages.filter(m => !m.read).length;
+
+  updateElement('total-visitors', visitors.length);
+  updateElement('total-messages', messages.length);
+  updateElement('today-visitors', todayVisitors);
+  updateElement('unread-messages', unreadMessages);
+}
+
+function renderVisitors(filter = '') {
+  const tbody = document.getElementById('visitors-table');
+  if (!tbody) return;
+
+  let visitors = getStorage(STORAGE_KEYS.visitors) || [];
+
+  if (filter) {
+    const lowerFilter = filter.toLowerCase();
+    visitors = visitors.filter(v =>
+      v.ip.toLowerCase().includes(lowerFilter) ||
+      v.location.toLowerCase().includes(lowerFilter) ||
+      v.browser.toLowerCase().includes(lowerFilter) ||
+      v.os.toLowerCase().includes(lowerFilter)
+    );
   }
 
-  function detectOS() {
-    const userAgent = navigator.userAgent
-    const platform = navigator.platform
-    let osName = "Unknown"
-
-    if (userAgent.indexOf("Win") !== -1) osName = "Windows"
-    else if (userAgent.indexOf("Mac") !== -1) osName = "macOS"
-    else if (userAgent.indexOf("Linux") !== -1) osName = "Linux"
-    else if (userAgent.indexOf("Android") !== -1) osName = "Android"
-    else if (userAgent.indexOf("like Mac") !== -1) osName = "iOS"
-
-    return osName
+  if (visitors.length === 0) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No hay visitantes registrados</td></tr>';
+    return;
   }
 
-  fetchVisitorInfo()
+  tbody.innerHTML = visitors.map(v => `
+    <tr>
+      <td>${escapeHtml(v.ip)}</td>
+      <td>${escapeHtml(v.location)}</td>
+      <td>${escapeHtml(v.browser)}</td>
+      <td>${escapeHtml(v.os)}</td>
+      <td>${escapeHtml(v.isp)}</td>
+      <td>${formatDate(v.timestamp)}</td>
+    </tr>
+  `).join('');
+}
 
-  const browserElement = document.getElementById("visitor-browser")
-  if (browserElement) {
-    browserElement.textContent = detectBrowser()
+function renderMessages(filter = '') {
+  const container = document.getElementById('messages-list');
+  if (!container) return;
+
+  let messages = getStorage(STORAGE_KEYS.messages) || [];
+
+  if (filter) {
+    const lowerFilter = filter.toLowerCase();
+    messages = messages.filter(m =>
+      m.name.toLowerCase().includes(lowerFilter) ||
+      m.email.toLowerCase().includes(lowerFilter) ||
+      m.subject.toLowerCase().includes(lowerFilter) ||
+      m.message.toLowerCase().includes(lowerFilter)
+    );
   }
 
-  const osElement = document.getElementById("visitor-os")
-  if (osElement) {
-    osElement.textContent = detectOS()
+  if (messages.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <p>No hay mensajes</p>
+      </div>
+    `;
+    return;
   }
-})
+
+  container.innerHTML = messages.map(m => `
+    <div class="message-card ${m.read ? '' : 'unread'}" data-id="${m.id}">
+      <div class="message-header">
+        <span class="message-from">${escapeHtml(m.name)}</span>
+        <span class="message-date">${formatDate(m.timestamp)}</span>
+      </div>
+      <div class="message-subject">${escapeHtml(m.subject)}</div>
+      <div class="message-preview">${escapeHtml(m.message)}</div>
+    </div>
+  `).join('');
+
+  // Add click handlers
+  container.querySelectorAll('.message-card').forEach(card => {
+    card.addEventListener('click', () => openMessage(card.dataset.id));
+  });
+}
+
+function openMessage(id) {
+  const messages = getStorage(STORAGE_KEYS.messages) || [];
+  const message = messages.find(m => m.id === id);
+  if (!message) return;
+
+  // Mark as read
+  message.read = true;
+  setStorage(STORAGE_KEYS.messages, messages);
+  updateStats();
+  renderMessages();
+
+  // Show modal
+  const modal = document.getElementById('message-modal');
+  document.getElementById('modal-subject').textContent = message.subject;
+  document.getElementById('modal-from').textContent = `De: ${message.name} (${message.email})`;
+  document.getElementById('modal-date').textContent = formatDate(message.timestamp);
+  document.getElementById('modal-message').textContent = message.message;
+
+  modal.classList.add('show');
+  modal.dataset.messageId = id;
+}
+
+function closeModal() {
+  const modal = document.getElementById('message-modal');
+  if (modal) modal.classList.remove('show');
+}
+
+function deleteMessage(id) {
+  let messages = getStorage(STORAGE_KEYS.messages) || [];
+  messages = messages.filter(m => m.id !== id);
+  setStorage(STORAGE_KEYS.messages, messages);
+  updateStats();
+  renderMessages();
+  closeModal();
+}
+
+function initTabs() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+
+      btn.classList.add('active');
+      document.getElementById(`${tab}-tab`).classList.add('active');
+    });
+  });
+}
+
+function initSearch() {
+  const visitorsSearch = document.getElementById('visitors-search');
+  const messagesSearch = document.getElementById('messages-search');
+
+  if (visitorsSearch) {
+    visitorsSearch.addEventListener('input', (e) => renderVisitors(e.target.value));
+  }
+
+  if (messagesSearch) {
+    messagesSearch.addEventListener('input', (e) => renderMessages(e.target.value));
+  }
+}
+
+function initDashboardActions() {
+  // Logout
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      setStorage(STORAGE_KEYS.isLoggedIn, false);
+      window.location.reload();
+    });
+  }
+
+  // Export visitors
+  const exportVisitors = document.getElementById('export-visitors');
+  if (exportVisitors) {
+    exportVisitors.addEventListener('click', () => {
+      const visitors = getStorage(STORAGE_KEYS.visitors) || [];
+      downloadJSON(visitors, 'visitors.json');
+    });
+  }
+
+  // Export messages
+  const exportMessages = document.getElementById('export-messages');
+  if (exportMessages) {
+    exportMessages.addEventListener('click', () => {
+      const messages = getStorage(STORAGE_KEYS.messages) || [];
+      downloadJSON(messages, 'messages.json');
+    });
+  }
+
+  // Clear visitors
+  const clearVisitors = document.getElementById('clear-visitors');
+  if (clearVisitors) {
+    clearVisitors.addEventListener('click', () => {
+      if (confirm('¿Estas seguro de eliminar todos los visitantes?')) {
+        setStorage(STORAGE_KEYS.visitors, []);
+        updateStats();
+        renderVisitors();
+      }
+    });
+  }
+
+  // Clear messages
+  const clearMessages = document.getElementById('clear-messages');
+  if (clearMessages) {
+    clearMessages.addEventListener('click', () => {
+      if (confirm('¿Estas seguro de eliminar todos los mensajes?')) {
+        setStorage(STORAGE_KEYS.messages, []);
+        updateStats();
+        renderMessages();
+      }
+    });
+  }
+
+  // Modal actions
+  const modalClose = document.getElementById('modal-close');
+  const modalOverlay = document.querySelector('.modal-overlay');
+  const modalDelete = document.getElementById('modal-delete');
+  const modalReply = document.getElementById('modal-reply');
+
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
+
+  if (modalDelete) {
+    modalDelete.addEventListener('click', () => {
+      const modal = document.getElementById('message-modal');
+      const id = modal.dataset.messageId;
+      if (confirm('¿Eliminar este mensaje?')) {
+        deleteMessage(id);
+      }
+    });
+  }
+
+  if (modalReply) {
+    modalReply.addEventListener('click', () => {
+      const modal = document.getElementById('message-modal');
+      const messages = getStorage(STORAGE_KEYS.messages) || [];
+      const message = messages.find(m => m.id === modal.dataset.messageId);
+      if (message) {
+        window.location.href = `mailto:${message.email}?subject=Re: ${message.subject}`;
+      }
+    });
+  }
+}
+
+function downloadJSON(data, filename) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ========================================
+   Initialize
+======================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  // Common init
+  initMatrixBackground();
+
+  // Page specific init
+  if (document.getElementById('typewriter')) {
+    initTypewriter();
+    trackVisitor();
+    initContactForm();
+    initSecretLogo();
+  }
+
+  if (document.getElementById('login-form')) {
+    initLogin();
+  }
+});
